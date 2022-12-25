@@ -1,0 +1,144 @@
+.column {
+    float: left;
+    /* transition: 1s; */
+}
+
+.column-50 {
+    width: 50%;
+}
+
+.column-100 {
+    width: 100%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.text-input {
+    width: 100%;
+}
+
+.plot-container {
+    margin: auto;
+    align-items: center;
+}
+
+.display-none {
+    display: none;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(130, 129, 129);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.color_preview {
+    width: 1em;
+    height: 1em;
+    border-radius: 3px;
+}
+
+/* checknoxes buttons */
+.checkbox-input-container {
+    display: inline;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.checkbox-input-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+}
+
+.checkbox-input-container .check {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: crimson;
+    border-radius: 3px;
+}
+
+.checkbox-input-container:hover input~.check {
+    background-color: rgb(239, 154, 154);
+}
+
+.checkbox-input-container:hover input:checked~.check {
+    background-color: rgb(77, 152, 105);
+}
+
+.checkbox-input-container input:checked~.check {
+    background-color: rgb(17, 239, 98);
+}
+
+.check:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-input-container input:checked~.check:after {
+    display: block;
+}
+
+.checkbox-input-container .check:after {
+    left: 4px;
+    top: 2px;
+    width: 3px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
