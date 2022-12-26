@@ -9,7 +9,6 @@
  * TODO:
  * - maybe project points >3d onto 3d
  * - implement knn classifier 
- * - style!
  * - color assing bug, second gets also shown
  */
 
@@ -81,7 +80,22 @@ const graph_options = {
         // no good solution, but works [by generating an error and thus no tooltip]
         return modify_options.tooltip ? "Value: <b>[" + point.x + "," + point.y + "," + point.z + "]</b><br>Class: <b>" + point.data.class + "</b>" : _
     },
-    backgroundColor: "#fff",
+    tooltipStyle: {
+        content: {
+            background: 'rgba(255, 255, 255, 0.7)',
+            padding: '10px',
+            borderRadius: '10px',
+            fontSize: '50%'
+        },
+        line: {
+            borderLeft: '1px dotted rgba(0, 0, 0, 0.5)'
+        },
+        dot: {
+            border: '5px solid rgba(0, 0, 0, 0.5)'
+        }
+    },
+    backgroundColor: "#f2f2f2",
+
 }
 
 /**
@@ -119,10 +133,14 @@ function hydrate_options() {
     modify_options_random_color.addEventListener("input", (e) => { modify_options.random_color = e.currentTarget.checked })
 }
 
+/**
+ * Saves the corresponding canvas as png and prompts download
+ * @param {*} element 
+ * @returns 
+ */
 function save_as_image(element) {
     const p1_canvas = $("#plot_container_1 canvas")[0]
     const p2_canvas = $("#plot_container_2 canvas")[0]
-    let pic
     switch (element.name) {
         case "p1":
             p1_canvas.toBlob(blob => {
@@ -338,23 +356,8 @@ async function process_f1_data() {
             resolve(file_reader.result)
         }
     })
-    let data = dataFromCsvString(content)
-    // remove first line
-    data.shift()
-
-    // graph stuff
-    let input_data_g = new vis.DataSet()
-    color_1 = modify_options.random_color ? [] : color_1
-    for (const coords of data) {
-        color_1 = addToColor(color_1, coords[coords.length - 1])
-        // expand to 3 coords
-        while (coords.length < 4) {
-            coords.splice(coords.length - 1, 0, 0)
-        }
-        input_data_g.add({ x: parseFloat(coords[0]), y: parseFloat(coords[1]), z: parseFloat(coords[2]), style: getColor(color_1, coords[coords.length - 1]), class: coords[coords.length - 1] })
-    }
-    graph_1.setData(input_data_g)
-
+    text_data_input_1.value = "//" + content
+    process_t1_data()
 }
 
 /**
@@ -369,23 +372,8 @@ async function process_f2_data() {
             resolve(file_reader.result)
         }
     })
-    let data = dataFromCsvString(content)
-    // remove first line
-    data.shift()
-
-    // graph stuff
-    let input_data_g = new vis.DataSet()
-    color_2 = modify_options.random_color ? [] : color_2
-    for (const coords of data) {
-        color_2 = addToColor(color_2, coords[coords.length - 1])
-        // expand to 3 coords
-        while (coords.length < 4) {
-            coords.splice(coords.length - 1, 0, 0)
-        }
-        input_data_g.add({ x: parseFloat(coords[0]), y: parseFloat(coords[1]), z: parseFloat(coords[2]), style: getColor(color_2, coords[coords.length - 1]), class: coords[coords.length - 1] })
-    }
-    graph_2.setData(input_data_g)
-
+    text_data_input_2.value = "//" + content
+    process_t2_data()
 }
 
 

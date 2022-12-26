@@ -1,0 +1,221 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Data Web</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="FileSaver.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="utility.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+    <script src="modifier/kmeans.js"></script>
+    <script defer src="main.js"></script>
+</head>
+
+<body>
+    <header>
+        <a href="index.html" class="logo">Polycoid</a>
+        <div class="header-right">
+            <a href="#long_instructions" id="instructions">Instructions</a>
+        </div>
+    </header>
+    <main role='main'>
+        <div class="site-header">
+            <h1>Classifying Data</h1>
+        </div>
+        <div class="row">
+            <div class="column column-100" id="column_1">
+                <div class="heading">
+                    <h2>Data</h2>
+                </div>
+                <div>
+                    <div class="plot_container" id="plot_container_1"></div>
+                    <input type="button" id="save-p1" class="save" name="p1" value="Save as Image">
+                </div>
+                <div class="input">
+                    <div class="instrucions">
+                        Insert here the data you want to visualize.<br>
+                        The last column is treated as the class.
+                    </div>
+                    <textarea name="" id="t_data_input_1" class="text-input" cols="30" rows="10"></textarea>
+
+                    <label for="t_data_file_input_1" class="file-input-top">
+                        Upload CSV File</label>
+                    <input type="file" name="t_data_file_input_1" id="t_data_file_input_1" class="file-input">
+                    <div id="color_assignment_1" class="display-none">
+                        Colors assigned to clusters:
+                    </div>
+                    <br>
+                    <input type="button" value="Toggle Modifying & Options" id="modify_toggle" class="modify-toggle" />
+                </div>
+            </div>
+            <!--shows only  if compared to original data -->
+            <div class="column column-50 display-none" id="column_2">
+                <div class="heading">
+                    <h2>Modified Data</h2>
+                </div>
+                <div>
+                    <div class="plot_container" id="plot_container_2"></div>
+                    <input type="button" id="save-p2" name="p2" class="save" value="Save as Image">
+                </div>
+                <div class="input">
+                    <div class="instrucions">
+                        The output of the Modified Data is displayed here. <br>
+                        (You can also edit it)
+                    </div>
+                    <textarea name="" id="t_data_input_2" class="text-input" cols="30" rows="10"></textarea>
+                    <label for="t_data_file_input_2" class="file-input-top">
+                        Upload CSV File</label>
+                    <input type="file" name="t_data_file_input_2" id="t_data_file_input_2" class="file-input">
+                    <div id="color_assignment_2" class="display-none">
+                        Colors assigned to clusters:
+                    </div>
+                </div>
+                <div class="modify-options">
+                    <h3>Modifying Options</h3>
+                    Modifying applies sth. on the left data and displays the output on the right side.
+                    <div class="modify-options-container">
+                        <table class="modify-options-table">
+                            <tr>
+                                <td>Snyc. Camera</td>
+                                <td>
+                                    <label class="checkbox-input-container">
+                                        <input type="checkbox" id="input_sync_camera" name="input-sync-camera"
+                                            value="true" checked style="display: none;">
+                                        <span class="check"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Is last row in left data the class?</td>
+                                <td>
+                                    <label class="checkbox-input-container">
+                                        <input type="checkbox" id="input_last_row_class" name="input-last-row-class"
+                                            value="true" checked>
+                                        <span class="check"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class='tooltip'>Special Point only outline?<span class='tooltiptext'>If
+                                            checked, the special points keep their class color, if not, they are
+                                            assigned an own color group</span>
+                                    </div>
+
+                                </td>
+                                <td>
+                                    <label class="checkbox-input-container">
+                                        <input type="checkbox" id="input_special_point_outline"
+                                            name="input-special-point-outline" value="true" checked>
+                                        <span class="check"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Show tooltips?</td>
+                                <td>
+                                    <label class="checkbox-input-container">
+                                        <input type="checkbox" id="input_tooltips" name="input-tooltips" value="true"
+                                            checked>
+                                        <span class="check"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class='tooltip'>Random Colors?<span class='tooltiptext'>If
+                                            checked, the clusters are assigned a new color on each change, if not, they
+                                            are assigned a random color the first time a new cluster appears. <span
+                                                style="color:red;">WARNING: This leads to all the colors accumulating
+                                                over time. They wont be removed if a cluster is removed. To fix this,
+                                                simply turn the setting on again, change sth., and turn it of
+                                                again.</span>
+                                    </div>
+
+                                </td>
+                                <td>
+                                    <label class="checkbox-input-container">
+                                        <input type="checkbox" id="input_random_color" name="input-random-color"
+                                            value="true" checked>
+                                        <span class="check"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="modifier">Modifier</label></td>
+                                <td>
+                                    <select name="modifier" id="modifier_input" class="modifier-input">
+                                        <option value="none" selected="selected">None</option>
+                                        <option value="knn">KNN</option>
+                                        <option value="kmeans">KMeans</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="modifier-options">
+                            <table class="modifier-options-table" id="modifier_options_table"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="long-instructions" id="long_instructions">
+            <div class="inner-instructions">
+                <h2>Instructions</h2>
+                <p>This Website allows you to:
+                <ol>
+                    <li>Visualize Data</li>
+                    <li>Modify Data</li>
+                    <li>Text Input</li>
+                    <li>Export as PNG</li>
+                </ol>
+                </p>
+                <h3>Visualize Data</h3>
+                <p>To Visualize data, you either paste csv-style Data (without header line) in the text field above or
+                    uplaod a csv file. The data gets plotted, as soon as you leave the field.</p>
+                <p>Each Cluster (signaled by the last column of data) gets assign a random Color, so if you want other
+                    colors change something (like adding a new line) to redraw it. The Color Assignment is displayed
+                    underneath the textarea.</p>
+                <p>This visualisation works on both sides, e.g. for when you want to comapre to sets of data, but
+                    remember that the right side gets overwritten, if you apply a modifier!</p>
+                <h3> Modify Data </h3>
+                <p>To modify data, simply click on the button above, to reveal the right side.</p>
+                <p>Now you can change setttings like the synced camera and if the data on the left side contains a
+                    class, aswell as choose your desired modifier that gets applied on the data on the left side (either
+                    text or csv, depending on which was edited last).</p>
+                <p>When selecting a modifier, new options appear, depending on which modifer is choosen.</p>
+                <p>To apply the modifer, simply hit the <i>Modify</i>-Button and the result gets inserted into the right
+                    textarea.</p>
+                <p><b>Pro Tip:</b> If a iteration buffer is present: <br> Click/focus the Iteration step field, scroll
+                    up to the graphs and then use arrow up and arrow down to cycle through the steps. You can even move
+                    the graph while doing so! (May be browser dependent behavoir!)</p>
+                <h3>Text Input</h3>
+                <p>When inserting text into one of the textfields be aware of the folling:
+                <ul>
+                    <li>The data must be in a csv-format, not including the first header line that contains the columns
+                        name</li>
+                    <li>To write a comment, simply put a <code>//</code> infront of it.</li>
+                    <li>To insert a special, highlighted point, simply put a <code>%</code> infront of it and remove its
+                        class.</li>
+                </ul>
+                </p>
+                <h3>Export as PNG</h3>
+                <p>Self explanatory..</p>
+            </div>
+            <!-- <div class="inner-examples">
+                <h2>Examples</h2>
+                <p></p>
+            </div> -->
+        </div>
+    </main>
+    <footer>
+        <a href="https://github.com/seeeebaaaa/web_data_classifier">
+            <img src="img/github-mark-white.svg" width="30px" alt="Github">
+        </a>
+    </footer>
+</body>
+
+</html>

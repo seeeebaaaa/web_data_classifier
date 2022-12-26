@@ -44,7 +44,7 @@ function kmeans_getOptionTable() {
         },
         {
             name: "<label for='kmeans_centroids'>Centroids</label>",
-            input: '<textarea cols="30" rows="10" name="kmeans_centroids" id="kmeans_centroids" disabled>-</textarea>'
+            input: '<textarea cols="15" rows="1" name="kmeans_centroids" id="kmeans_centroids" disabled>-</textarea>'
         }
     ]
     for (const option of option_data) {

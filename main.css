@@ -1,3 +1,66 @@
+body {
+    background-color: #f2f2f2;
+    margin: 0%;
+    overflow: auto;
+}
+
+* {
+    font-family: "verdana";
+}
+
+/* header */
+header {
+    overflow: hidden;
+    background-color: #d4d4d4;
+    padding: 20px 10px;
+}
+
+header a {
+    float: left;
+    color: #001220;
+    text-align: center;
+    padding: 6px;
+    margin-left: 10px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+header a.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.header-right a {
+    float: right;
+}
+
+.header-right a#instructions {
+    background-color: #00101C;
+    color: aliceblue;
+}
+
+.header-right a#instructions:hover {
+    background-color: #374047;
+    color: aliceblue;
+    transition-duration: 100ms;
+}
+
+/* Footer */
+footer {
+    left: 0;
+    bottom: 0;
+    background-color: #383838;
+    color: #f2f2f2;
+    width: 100%;
+    text-align: center;
+    font-size: 75%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* Columns */
 .column {
     float: left;
     /* transition: 1s; */
@@ -5,10 +68,29 @@
 
 .column-50 {
     width: 50%;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .column-100 {
-    width: 100%;
+    width: calc(100% - 10px);
+    padding-left: 10px;
+    overflow-x: none;
+}
+
+#column_2 {
+    border-left: 1px #001220 dashed;
+}
+
+/* headings */
+.heading {
+    text-align: center;
+}
+
+/* short Instructions */
+.instrucions {
+    /* padding-left: 10px; */
+    text-align: center;
 }
 
 /* Clear floats after the columns */
@@ -18,19 +100,95 @@
     clear: both;
 }
 
+/* inputs */
 .text-input {
-    width: 100%;
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 7px;
 }
 
+.file-input {
+    padding-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.modify-toggle {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[type="button"] {
+    background-color: #00101C;
+    color: aliceblue;
+    border: none;
+    padding: 5px 15px;
+    vertical-align: center;
+    border-radius: 4px;
+}
+
+input[type="button"]:hover {
+    background-color: #374047;
+    color: #f0f8ff;
+    transition-duration: 100ms;
+}
+
+input[type="button"].save {
+    background-image: url(img/save-file.svg);
+    background-repeat: no-repeat;
+    background-position: right;
+    background-position-x: 97%;
+    background-size: 11px;
+    padding: 5px;
+    padding-right: 18px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-input-top {
+    background-color: #00101C;
+    color: aliceblue;
+    width: 104px;
+    border: none;
+    padding: 5px;
+    vertical-align: center;
+    border-radius: 4px;
+    font-size: 80%;
+    display: block;
+    margin: auto;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.file-input-top:hover {
+    background-color: #374047;
+    color: #f0f8ff;
+    transition-duration: 100ms;
+}
+
+/* plot */
 .plot-container {
     margin: auto;
     align-items: center;
 }
 
+/* utility */
 .display-none {
     display: none;
 }
 
+/* tooltip */
 .tooltip {
     position: relative;
     display: inline-block;
@@ -71,6 +229,7 @@
     opacity: 1;
 }
 
+/* Color preview */
 .color_preview {
     width: 1em;
     height: 1em;
@@ -81,8 +240,8 @@
 .checkbox-input-container {
     display: inline;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
+    padding-left: 15px;
+    margin-bottom: 15px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -96,12 +255,12 @@
     cursor: pointer;
     height: 0;
     width: 0;
-
+    display: none;
 }
 
 .checkbox-input-container .check {
     position: absolute;
-    top: 0;
+    top: 2;
     left: 0;
     height: 15px;
     width: 15px;
@@ -141,4 +300,15 @@
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+/* modify table */
+.modify-options-table tr td:nth-child(2) {
+    text-align: center;
+}
+
+
+/* long instruction */
+.long-instructions {
+    padding: 0px 15px 0px 15px;
 }
