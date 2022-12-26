@@ -10,6 +10,8 @@
  * - maybe project points >3d onto 3d
  * - implement knn classifier 
  * - color assing bug, second gets also shown
+ * - p2_centroids class is used as coord in iteration 1(/0)
+ * - gif background color
  */
 
 var data_1 = null;

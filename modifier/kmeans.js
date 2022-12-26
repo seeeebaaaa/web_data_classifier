@@ -6,7 +6,8 @@ const kmeans_options = {
     cluster_count: 1,
     distance_type: "manhattan",
     max_iterations: 100,
-    auto_centroids: false
+    auto_centroids: false,
+    gif_length: 5000
 }
 
 let kmeans_iteterations = [] // [[[data],[centroids]],[...]]
@@ -41,6 +42,14 @@ function kmeans_getOptionTable() {
         {
             name: "<label for='kmeans_iterate'>Show Iteration Nr.</label>",
             input: '<input id="kmeans_iterate" type="number" value="1" name="kmeans_iterate" onchange="kmeans_oninput_options(this)" min="0">'
+        },
+        {
+            name: "<label for='kmeans_gif_length'>Gif Length in s</label>",
+            input: "<input name='kmeans_gif_length' type='number' class='number-input' id='kmeans_gif_length' min='1' max='60' value='5' steps='1' onchange='kmeans_oninput_options(this)'>"
+        },
+        {
+            name: " <div class='tooltip'><label for='kmeans_download_as_gif'>Download as GIF</label><span class='tooltiptext'>If the gif doenst download, google 'how to disable Cross-Origin Restrictions <i>YourBrowser</i>' or 'disable the same-origin policy <i>YourBrowser</i>'</span></div > ",
+            input: '<input type="button" class="save" value="Download" name="kmeans_download_as_gif" onclick="kmeans_download_as_gif()">'
         },
         {
             name: "<label for='kmeans_centroids'>Centroids</label>",
@@ -81,6 +90,9 @@ function kmeans_oninput_options(element) {
             return
         case "kmeans_auto_centroids":
             kmeans_options.auto_centroids = element.checked
+            return
+        case "kmeans_gif_length":
+            kmeans_options.gif_length = element.value * 1000
             return
         default:
             console.log("sth wentr wrooong");
@@ -129,6 +141,36 @@ function kmeans_setStepCounter() {
     let element = document.getElementById("kmeans_iterate")
     element.value = kmeans_iteterations.length - 1
     element.max = kmeans_iteterations.length - 1
+}
+
+/**
+ * Create and download gif
+ * @returns 
+ */
+function kmeans_download_as_gif() {
+    /**
+    * Gif obj 
+     */
+    let gif = new GIF({
+        workerScript:"extern/gif.worker.js",
+        workers: 2,
+        quality: 1,
+        background:"#fff",
+        transparent: 0xFFFFFF
+    });
+    // download gif, once rendered
+    gif.on('finished', function (blob) {
+        saveAs(blob, "img.gif");
+    });
+    const steps = kmeans_iteterations.length
+    console.log('steps: ', steps);
+    if (steps < 0) return
+    const canvas = $("#plot_container_2 canvas")[0]
+    for (let i = 0; i < steps; i++) {
+        kmeans_showIterateStep(i)
+        gif.addFrame(canvas, { copy: true, delay: parseInt(kmeans_options.gif_length / steps) })
+    }
+    gif.render()
 }
 
 /**
