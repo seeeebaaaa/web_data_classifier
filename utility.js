@@ -56,6 +56,19 @@ function set_last_column_to_minus_one(data) {
         for (const [index, entry] of data.entries()) {
             data[index][entry.length - 1] = -1
         }
+    } else {
+        for (const [index, entry] of data.entries()) {
+            data[index][entry.length] = -1
+        }
+    }
+    return data
+}
+
+function removeClass(data) {
+    if (modify_options.is_last_row_class) {
+        for (const [index, entry] of data.entries()) {
+            data[index].pop()
+        }
     }
     return data
 }
@@ -109,7 +122,7 @@ function distance_manhattan(data_point_1, data_point_2) {
 }
 
 /**
- * Calculates euklidian distacne between two data points
+ * Calculates SQUARED euklidian distance between two data points
  * @param {*} data_point_1
  * @param {*} data_point_2 
  * @returns 
@@ -117,6 +130,7 @@ function distance_manhattan(data_point_1, data_point_2) {
 function distance_euklidian(data_point_1, data_point_2) {
     let aggr_distance = 0
     for (const [dimension, data_point_value] of data_point_1.entries()) {
+        // aggr_distance = exactMath.add(aggr_distance, (exactMath.pow(exactMath.sub(data_point_value, data_point_2[dimension]), 2)))
         aggr_distance += (data_point_value - data_point_2[dimension]) ** 2
     }
     return aggr_distance
@@ -139,4 +153,69 @@ function getDistances(data_point_1, data_point_2, distance_type) {
             console.error("Sth went rwongg!");
             break;
     }
+}
+
+function arrray_include(data, el) {
+    for (const d_el of data) {
+        let a = 0
+        for (const [i, dim] of d_el.entries()) {
+            if (el[i] == dim) {
+                a++;
+            }
+        }
+        if (a == d_el.length) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
+ * Seperates doubles into an extern data, assuming last index of point is class
+ * @param {*} data 
+ * @returns 
+ */
+function remove_doubles(data) {
+    let result_data = [], result_doubles = []
+    for (const el of data) {
+        if (!arrray_include(result_data, el)) {
+            result_data.push(el)
+        } else {
+            result_doubles.push(el)
+        }
+    }
+
+    console.log('result_doubles: ', result_doubles);
+    console.log('result_data: ', result_data);
+    return [result_data, result_doubles]
+}
+
+/***
+ * Asisgns clustered classes to all doubles and adds them to the data,, assuming last index of point is class
+ */
+function parse_doubles(data, doubles) {
+    let result = JSON.parse(JSON.stringify(data))
+    for (const el of doubles) {
+        const el_nc = el.slice(0, -1)
+        const class_el = data.find(el => {
+            for (const _el of el.slice(0, -1).entries()) {
+                if (_el[1] != el_nc[_el[0]]) {
+                    return false
+                }
+            } return true
+        })
+        result.push(class_el)
+    }
+    return result
+}
+
+function printMatrix(matrix) {
+    let output = ""
+    for (const el of matrix) {
+        output += "\n"
+        for (const _el of el) {
+            output += Math.round(_el * 100) / 100 + " "
+        }
+    }
+    console.log(output);
 }

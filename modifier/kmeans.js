@@ -152,10 +152,10 @@ function kmeans_download_as_gif() {
     * Gif obj 
      */
     let gif = new GIF({
-        workerScript:"extern/gif.worker.js",
+        workerScript: "extern/gif.worker.js",
         workers: 2,
         quality: 1,
-        background:"#fff",
+        background: "#fff",
         transparent: 0xFFFFFF
     });
     // download gif, once rendered
@@ -190,7 +190,7 @@ function kmeans_showCentroids(centroids) {
 function kmeans_addCentroids(centroids) {
     const area = document.getElementById("kmeans_centroids")
     if (kmeans_options.auto_centroids) {
-        text_data_input_2.value = area.value + text_data_input_2.value
+        text_data_input_2.value = "// Centroids are added at the end\n" + text_data_input_2.value + area.value
     }
     text_data_input_2.dispatchEvent(new Event("change"))
 }
@@ -200,12 +200,15 @@ function kmeans_addCentroids(centroids) {
  */
 async function kmeans_modifiy() {
     kmeans_iteterations = []
-    let data = await kmeans_getData()
+    let raw_data = await kmeans_getData()
     //initialize class
-    data = set_last_column_to_minus_one(data)
+    raw_data = set_last_column_to_minus_one(raw_data)
+    let [data, doubles] = remove_doubles(raw_data)
+    console.log('data: ', data);
+
 
     const [modified_data, centroids] = kmeans_cluster(data, kmeans_options.cluster_count, kmeans_options.distance_type, kmeans_options.max_iterations)
-    outputCsvData(text_data_input_2, modified_data)
+    outputCsvData(text_data_input_2, parse_doubles(modified_data, doubles))
     kmeans_setStepCounter(modified_data)
     kmeans_showCentroids(centroids)
     kmeans_addCentroids(centroids)
@@ -227,8 +230,8 @@ function kmeans_cluster(data, cluster_count, distance_type, max_iterations) {
         console.log("ITERATION: ", i);
         old_data = JSON.parse(JSON.stringify(data))
         kmeans_iteterations.push([old_data, centroids]) // save iteration step for visualizing
-        data = kmeans_calculateNewAssignment(data, centroids)
-        centroids = kmeans_calculateNewCentroids(data, kmeans_options.cluster_count)
+        data = kmeans_calculateNewAssignment(data, centroids, distance_type)
+        centroids = kmeans_calculateNewCentroids(data, cluster_count)
     } while (JSON.stringify(old_data) != JSON.stringify(data) && max_iterations-- > 0)
     return [data, centroids]
 }
@@ -239,15 +242,23 @@ function kmeans_cluster(data, cluster_count, distance_type, max_iterations) {
  * @param {*} cluster_count 
  */
 function kmeans_setFirstCentroids(data, cluster_count) {
-    let picked_points = [] // contains index-entry pairs of picked points
+    let picked_points = [] // contains entrys of picked points
     for (; cluster_count > 0; cluster_count--) {
         let temp_point
+        let max = 100000;
         do {
             temp_point = data[randomInt(data.length)]
-        } while (picked_points.includes(temp_point))
+            max--
+            if (max == 0) {
+                console.error("AHHHH");
+                return
+            }
+        } while (arrray_include(picked_points, temp_point))
         picked_points.push(temp_point)
+        console.table(picked_points);
+
     }
-    console.log("picked the points: ", picked_points);
+    console.table(picked_points);
     return picked_points
 }
 
@@ -257,11 +268,11 @@ function kmeans_setFirstCentroids(data, cluster_count) {
  * @param {*} data 
  * @param {*} centroids 
  */
-function kmeans_calculateNewAssignment(data, centroids) {
+function kmeans_calculateNewAssignment(data, centroids, distance_type) {
     for (const [index, entry] of data.entries()) {
         let distances = [] // holds distances to each cluster
         for (let centroid_number = 0; centroid_number < centroids.length; centroid_number++) {
-            distances[centroid_number] = getDistances(entry.slice(0, -1), centroids[centroid_number], kmeans_options.distance_type)
+            distances[centroid_number] = getDistances(entry.slice(0, -1), centroids[centroid_number], distance_type)
         }
         let nearest_centroid_index = distances.indexOf(Math.min(...distances))
         data[index][entry.length - 1] = nearest_centroid_index
@@ -289,10 +300,9 @@ function kmeans_calculateNewCentroids(data, cluster_count) {
     for (const [index, entry] of data.entries()) {
         elementsInCluster[entry[entry.length - 1]]++ // count how much elements are in each cluster
         for (const [coord_index, coord] of entry.slice(0, -1).entries()) {
-            positions[entry[entry.length - 1]][coord_index] += coord
+            positions[entry[entry.length - 1]][coord_index] += coord //entry.length-1
         }
     }
-    console.log(positions);
     //divide and write in centroids
     for (const [pos_index, centroid_pos] of positions.entries()) {
         for (const [coord_index, coord] of centroid_pos.entries()) {
@@ -300,5 +310,6 @@ function kmeans_calculateNewCentroids(data, cluster_count) {
         }
     }
 
+    console.log('positions: ', positions);
     return positions
 }

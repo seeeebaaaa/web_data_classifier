@@ -6,13 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modify Data Web</title>
     <link rel="stylesheet" href="main.css">
+    <!--Extern:-->
     <script src="extern/FileSaver.js"></script>
     <script src="extern/gif.js"></script>
     <script src="extern/gif.worker.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="utility.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.js"></script>
     <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+    <!--Intern-->
+    <script src="utility.js"></script>
     <script src="modifier/kmeans.js"></script>
+    <script src="modifier/spectral_clustering.js"></script>
     <script defer src="main.js"></script>
 </head>
 
@@ -153,6 +157,7 @@
                                         <option value="none" selected="selected">None</option>
                                         <option value="knn">KNN</option>
                                         <option value="kmeans">KMeans</option>
+                                        <option value="sc">Spectral Clustering</option>
                                     </select>
                                 </td>
                             </tr>

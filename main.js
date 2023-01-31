@@ -12,6 +12,11 @@
  * - color assing bug, second gets also shown
  * - p2_centroids class is used as coord in iteration 1(/0)
  * - gif background color
+ * - KMEANS: case no class given, doenst work
+ * - Add download as csv
+ * - Add presets
+ * - download bar
+ * - calculating bar
  */
 
 var data_1 = null;
@@ -177,6 +182,9 @@ function modifer() {
             break;
         case "kmeans":
             modifier_options_table.innerHTML = kmeans_getOptionTable()
+            break;
+        case "sc":
+            modifier_options_table.innerHTML = sc_getOptionTable()
             break;
         default:
             console.error("An error occured while selecting the modifiert");
